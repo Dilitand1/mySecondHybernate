@@ -10,9 +10,13 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ConfigClass.class);
-        SessionFactory sessionFactory = context.getBean("sessionFactory", SessionFactory.class);
+        ServiceDAO serviceDAO = context.getBean("serviceDAO", ServiceDAO.class);
+        //ServiceDAO serviceDAO = new ServiceDAO();
+        Client client = serviceDAO.getClient(6);
+        System.out.println(client.getName());
+        System.out.println(client.getDr());
     }
-
+/*
     public static void test3() {
         ServiceDAO serviceDAO = new ServiceDAO();
         Client client = serviceDAO.getClient(6);
@@ -33,5 +37,5 @@ public class Main {
         ServiceDAO serviceDAO = new ServiceDAO();
         List<Client> list = serviceDAO.getAllClients();
         System.out.println(list);
-    }
+    }*/
 }

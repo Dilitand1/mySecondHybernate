@@ -5,9 +5,11 @@ package DAO;
         import models.Client;
         import org.hibernate.Session;
         import org.hibernate.Transaction;
+        import org.springframework.stereotype.Component;
 
         import java.util.List;
 
+@Component
 public class HyperDaoImpl implements HyperDao {
     @Override
     public Client getClient(int id) {

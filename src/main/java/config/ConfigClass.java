@@ -1,7 +1,15 @@
 package config;
 
+import DAO.HyperDaoImpl;
+import ServiceDAO.ServiceDAO;
 import org.hibernate.SessionFactory;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.service.ServiceRegistry;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScans;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
@@ -11,6 +19,10 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
+@ComponentScans({
+        @ComponentScan("DAO"),
+        @ComponentScan("ServiceDAO")
+})
 public class ConfigClass {
 
     @Bean
@@ -24,18 +36,18 @@ public class ConfigClass {
     }
 
     @Bean
-    public SessionFactory sessionFactory(DataSource dataSource) {
+    public SessionFactory sessionFactory() {
+        // Create the ServiceRegistry from hibernate.cfg.xml
+        ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()//
+                .configure("hibernate.cfg.xml").build();
+        // Create a metadata sources using the specified service registry.
+        Metadata metadata = new MetadataSources(serviceRegistry).getMetadataBuilder().build();
+        return metadata.getSessionFactoryBuilder().build();
+    }
 
-        final LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
-        factoryBean.setDataSource(dataSource);
-        factoryBean.setPackagesToScan("models");
-        final Properties property = new Properties();
-        property.setProperty("hibernate.dialect",
-                "org.hibernate.dialect.H2Dialect");
-        property.setProperty("hibernate.show_sql", "true");
-        property.setProperty("hibernate.hbm2ddl", "validate");
-        factoryBean.setHibernateProperties(property);
-        return factoryBean.getObject();
+    @Bean
+    public ServiceDAO serviceDAO(){
+        return new ServiceDAO();
     }
 
     @Bean
@@ -47,6 +59,5 @@ public class ConfigClass {
         tr.setSessionFactory(sessionFactory);
         return tr;
     }
-
 
 }
