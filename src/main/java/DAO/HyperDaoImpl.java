@@ -49,7 +49,7 @@ public class HyperDaoImpl implements HyperDao {
     }
 
     @Override
-    public void delClient(Client client){
+    public void delClient(Client client) {
         Session session = HibernateFactory.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
         session.delete(client);
